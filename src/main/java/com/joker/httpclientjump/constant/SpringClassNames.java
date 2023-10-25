@@ -1,6 +1,7 @@
-package com.wxibm333.constant;
+package com.joker.httpclientjump.constant;
 
 import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 /**

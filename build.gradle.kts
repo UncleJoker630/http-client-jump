@@ -8,7 +8,13 @@ group = "com.joker"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    maven {
+        isAllowInsecureProtocol = true
+        url = uri("http://maven.aliyun.com/nexus/content/groups/public/")
+    }
     mavenCentral()
+
+
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -17,7 +23,11 @@ intellij {
     version.set("2023.2.3")
     type.set("IU") // Target IDE Platform
 
-    plugins.set(listOf("java", "restClient","SpringMvc"))
+    plugins.set(listOf(
+            "com.intellij.java",
+            "com.intellij.spring.mvc",
+            "com.intellij.spring.boot"
+    ))
 }
 
 tasks {

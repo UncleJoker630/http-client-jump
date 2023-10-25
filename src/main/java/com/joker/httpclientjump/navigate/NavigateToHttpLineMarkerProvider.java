@@ -1,31 +1,24 @@
-package com.wxibm333.navigate;
+package com.joker.httpclientjump.navigate;
 
-import com.google.common.collect.Sets;
+import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ws.http.request.HttpRequestPsiFile;
-import com.intellij.ws.http.request.psi.HttpMethod;
-import com.intellij.ws.http.request.psi.HttpPathAbsolute;
-import com.intellij.ws.http.request.psi.HttpRequest;
-import com.wxibm333.http.request.Request;
-import com.wxibm333.util.HttpRequestUtil;
-import com.wxibm333.util.JavaUtil;
-import icons.RestClientIcons;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.joker.httpclientjump.action.NewRequestAction;
+import com.joker.httpclientjump.util.JavaUtil;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.util.Collection;
 
 /**
  * java类导航到http文件
@@ -36,29 +29,34 @@ import org.jetbrains.annotations.NotNull;
  */
 public class NavigateToHttpLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
-  private List<HttpMethod> mathByHttpPathAbsolute(PsiElement element) {
-    Request request = JavaUtil.getRestPathAbsolute((PsiMethod) element);
-    List<HttpRequest> httpRequests = HttpRequestUtil
-        .getHttpRequestByHttpPathAbsolute(element.getProject(), request);
-    return httpRequests.stream().map(HttpRequest::getMethod).collect(Collectors.toList());
-  }
+    final static Icon icon = IconLoader.getIcon("/icons/request.svg", NavigateToHttpLineMarkerProvider.class.getClassLoader());
 
-  @Override
-  protected void collectNavigationMarkers(@NotNull PsiElement element,
-      @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
-    if (JavaUtil.isRestMethod(element)) {
-      Collection<HttpMethod> matchResults = this.mathByHttpPathAbsolute(element);
-      if (matchResults != null && !matchResults.isEmpty()) {
-        NavigationGutterIconBuilder<PsiElement> builder =
-            NavigationGutterIconBuilder.create(RestClientIcons.Request)
-                .setAlignment(GutterIconRenderer.Alignment.CENTER)
-                .setTargets(matchResults)
-                .setTooltipTitle("Navigation to target in http file");
-        PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-        if (nameIdentifier != null) {
-          result.add(builder.createLineMarkerInfo(nameIdentifier));
-        }
-      }
+    public NavigateToHttpLineMarkerProvider() {
+        super();
     }
-  }
+
+
+    @Override
+    protected void collectNavigationMarkers(@NotNull PsiElement element,
+                                            @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
+        if (JavaUtil.isRestMethod(element)) {
+
+            PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
+            if (nameIdentifier == null) {
+                return;
+            }
+
+            NavigationGutterIconBuilder<PsiElement> builder =
+                    NavigationGutterIconBuilder.create(icon)
+                            .setTarget(null)
+                            .setAlignment(GutterIconRenderer.Alignment.CENTER)
+                            .setTooltipTitle("Navigation to Target in Http File");
+            GutterIconNavigationHandler<PsiElement> handler = (e, elt) -> {
+                NewRequestAction newRequestAction = new NewRequestAction((PsiMethod) element);
+                AnActionEvent event = AnActionEvent.createFromInputEvent(e, ActionPlaces.MOUSE_SHORTCUT, new Presentation(), DataContext.EMPTY_CONTEXT);
+                newRequestAction.actionPerformed(event);
+            };
+            result.add(builder.createLineMarkerInfo(nameIdentifier, handler));
+        }
+    }
 }

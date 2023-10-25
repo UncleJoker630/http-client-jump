@@ -1,4 +1,4 @@
-package com.wxibm333.constant;
+package com.joker.httpclientjump.constant;
 
 /**
  * 公共常量类型
