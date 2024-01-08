@@ -32,11 +32,6 @@ public class NewRequestAction extends AnAction {
     private PsiFile httpFile;
     private final PsiMethod method;
 
-    public NewRequestAction() {
-        this.httpFile = null;
-        this.method = null;
-    }
-
     public NewRequestAction(PsiMethod method) {
         this.method = method;
     }

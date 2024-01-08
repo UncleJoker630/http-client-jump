@@ -56,20 +56,14 @@ public class JavaUtil {
         if (psiAnnotation != null) {
             String qualifiedName = psiAnnotation.getQualifiedName();
             if (qualifiedName != null) {
-                switch (qualifiedName) {
-                    case SpringClassNames.REQUEST_GET:
-                        return Request.Method.GET;
-                    case SpringClassNames.REQUEST_PUT:
-                        return Request.Method.PUT;
-                    case SpringClassNames.REQUEST_POST:
-                        return Method.POST;
-                    case SpringClassNames.REQUEST_PATCH:
-                        return Method.PATCH;
-                    case SpringClassNames.REQUEST_DELETE:
-                        return Method.DELETE;
-                    default:
-                        return Request.Method.ALL;
-                }
+                return switch (qualifiedName) {
+                    case SpringClassNames.REQUEST_GET -> Method.GET;
+                    case SpringClassNames.REQUEST_PUT -> Method.PUT;
+                    case SpringClassNames.REQUEST_POST -> Method.POST;
+                    case SpringClassNames.REQUEST_PATCH -> Method.PATCH;
+                    case SpringClassNames.REQUEST_DELETE -> Method.DELETE;
+                    default -> Method.ALL;
+                };
             }
         }
         return null;
