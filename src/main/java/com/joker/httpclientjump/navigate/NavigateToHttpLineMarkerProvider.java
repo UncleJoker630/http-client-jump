@@ -45,7 +45,6 @@ public class NavigateToHttpLineMarkerProvider extends RelatedItemLineMarkerProvi
             if (nameIdentifier == null) {
                 return;
             }
-
             NavigationGutterIconBuilder<PsiElement> builder =
                     NavigationGutterIconBuilder.create(icon)
                             .setTarget(null)

@@ -3,6 +3,7 @@ package com.joker.httpclientjump.action;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -23,11 +24,16 @@ import com.joker.httpclientjump.util.JavaUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * @author OuBa
  * @date 2023-10-24
  */
+
 public class NewRequestAction extends AnAction {
+
+    Logger logger = Logger.getInstance(NewRequestAction.class);
 
     private PsiFile httpFile;
     private final PsiMethod method;
@@ -46,7 +52,7 @@ public class NewRequestAction extends AnAction {
             if (StringUtils.isBlank(s)) {
                 return;
             }
-            String name = method.getContainingClass().getName();
+            String name = Objects.requireNonNull(method.getContainingClass()).getName();
             createHttpFile(project, name, s);
         }
         Integer lineOffset = addHttpTestMethod(project);
@@ -57,25 +63,25 @@ public class NewRequestAction extends AnAction {
 
     private void createHttpFile(Project project, String fileName, String filePath) {
         String basePath = project.getBasePath();
-        VirtualFile root = LocalFileSystem.getInstance().findFileByPath(basePath);
+        VirtualFile root = LocalFileSystem.getInstance().findFileByPath(Objects.requireNonNull(basePath));
         // Check if the http directory already exists
         String[] split = filePath.split("/");
         httpFile = WriteCommandAction.runWriteCommandAction(project, (Computable<PsiFile>) () -> {
             try {
                 VirtualFile parent = root;
                 for (String s : split) {
-                    VirtualFile child = parent.findChild(s);
+                    VirtualFile child = Objects.requireNonNull(parent).findChild(s);
                     if (child == null) {
                         child = parent.createChildDirectory(null, s);
                     }
                     parent = child;
                 }
-                VirtualFile childData = parent.createChildData(null, fileName + ".http");
+                VirtualFile childData = Objects.requireNonNull(parent).createChildData(null, fileName + ".http");
                 PsiManager psiManager = PsiManager.getInstance(project);
                 httpFile = psiManager.findFile(childData);
                 return httpFile;
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("createHttpFile error", e);
             }
             return null;
         });
@@ -84,7 +90,7 @@ public class NewRequestAction extends AnAction {
     public Integer addHttpTestMethod(Project project) {
 
         Request request = JavaUtil.getRestPathAbsolute(method);
-        String methodName = request.getPathAbsolute().iterator().next();
+        String methodName = Objects.requireNonNull(request).getPathAbsolute().iterator().next();
         int offset = findTestMethodInHttpFile(methodName);
         if (offset != -1) {
             return offset;
@@ -96,7 +102,7 @@ public class NewRequestAction extends AnAction {
             if (document != null) {
                 document.insertString(document.getTextLength(), httpRequest);
             }
-            return document.getLineCount();
+            return Objects.requireNonNull(document).getLineCount();
         });
     }
 
