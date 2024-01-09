@@ -2,11 +2,7 @@ package com.joker.httpclientjump.util;
 
 import com.joker.httpclientjump.constant.Common;
 
-/**
- * @author wangXin
- * @version v1.0.0
- * @date 2020-05-15 17:18
- */
+
 public class ToolUtil {
 
     /**
@@ -14,8 +10,6 @@ public class ToolUtil {
      *
      * @param param Url path absolute
      * @return java.lang.String
-     * @author: wangXin
-     * @date: 2020-05-16 13:43
      */
     public static String formatPath(String param) {
         while (param.startsWith(Common.DIAGONAL)) {

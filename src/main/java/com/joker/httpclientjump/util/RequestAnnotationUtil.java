@@ -12,11 +12,6 @@ import com.joker.httpclientjump.constant.SpringClassNames;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author wangXin
- * @version v1.0.0
- * @date 2020-05-15 14:30
- */
 public class RequestAnnotationUtil {
     public static Set<String> getPathByRequestMappingAnnotation(PsiAnnotation annotation) {
         if (SpringClassNames.REQUEST_COLLECTION.contains(annotation.getQualifiedName())) {

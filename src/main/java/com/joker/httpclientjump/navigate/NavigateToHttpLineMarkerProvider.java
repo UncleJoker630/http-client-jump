@@ -22,10 +22,6 @@ import java.util.Collection;
 
 /**
  * java类导航到http文件
- *
- * @author wangXin
- * @version v1.0.0
- * @date 2020-05-14 11:49
  */
 public class NavigateToHttpLineMarkerProvider extends RelatedItemLineMarkerProvider {
 

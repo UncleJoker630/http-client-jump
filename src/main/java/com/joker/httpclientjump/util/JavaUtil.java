@@ -12,11 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * @author wangXin
- * @version v1.0.0
- * @date 2020-05-14 16:11
- */
 public class JavaUtil {
 
     public static boolean isRestMethod(PsiElement element) {
@@ -26,7 +21,7 @@ public class JavaUtil {
             return psiAnnotation != null;
         }
         return false;
-    
+
     }
 
     public static @Nullable Request getRestPathAbsolute(PsiMethod method) {
