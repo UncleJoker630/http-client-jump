@@ -3,7 +3,6 @@ package com.joker.httpclientjump.action;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -33,7 +32,6 @@ import java.util.Objects;
 
 public class NewRequestAction extends AnAction {
 
-    Logger logger = Logger.getInstance(NewRequestAction.class);
 
     private PsiFile httpFile;
     private final PsiMethod method;
@@ -81,7 +79,6 @@ public class NewRequestAction extends AnAction {
                 httpFile = psiManager.findFile(childData);
                 return httpFile;
             } catch (Exception e) {
-                logger.error("createHttpFile error", e);
             }
             return null;
         });
