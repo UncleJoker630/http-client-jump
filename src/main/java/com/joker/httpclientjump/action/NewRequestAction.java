@@ -24,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author OuBa
@@ -37,6 +39,7 @@ public class NewRequestAction extends AnAction {
     private final PsiMethod method;
 
     public NewRequestAction(PsiMethod method) {
+        super();
         this.method = method;
     }
 
@@ -109,13 +112,16 @@ public class NewRequestAction extends AnAction {
                 request.getPathAbsolute().iterator().next() + "\n";
     }
 
+
     private int findTestMethodInHttpFile(String content) {
+
+        Pattern pattern = Pattern.compile("http://[^/]+(/.*)");
         String fileContent = httpFile.getText();
         String[] lines = fileContent.split("\n");
-        int shortestDistance = Integer.MAX_VALUE;
         int offset = -1;
         for (int i = 0; i < lines.length; i++) {
-            if (lines[i].contains(content) && (lines[i].length() - content.length()) < shortestDistance) {
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find(1)) {
                 offset = i;
             }
         }
@@ -127,12 +133,10 @@ public class NewRequestAction extends AnAction {
         if (containingClass == null) {
             return null;
         }
-
         String controllerName = containingClass.getName();
         if (controllerName == null) {
             return null;
         }
-
         // Create a probable http filename based on the controller name
         String probableHttpFileName = controllerName + ".http";
 
